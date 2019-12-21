@@ -1,80 +1,57 @@
-class SearchBar extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <div className='search-bar'>
-          <form>
-            <input
-              type='text'
-              name='searchbar'
-              id='searchbar'
-              placeholder='Search Movies...'
-            ></input>
-            <input class='btn btn-primary' type='submit' value='Search'></input>
-          </form>
-        </div>
-      </React.Fragment>
-    );
-  }
-}
-
 class Search extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      baseURL: 'https://api.themoviedb.org/3/',
-      apikey: 'api_key=' + '1a31cfdf9cc81f7229bbbc09db5d95bd',
-      query: '&query=',
-      searchquery: 'search/movie?',
-      movieTitle: 'Jack+Reacher',
-      searchURL: '',
-      movieResults: []
+    constructor(props) {
+        super(props);
+        this.state = {
+            movieResults: []
+        };
+    }
+    handleRender = event => {
+        fetch(
+            `https://api.themoviedb.org/3/search/movie?api_key=1a31cfdf9cc81f7229bbbc09db5d95bd&query=${event.target.value}`
+        )
+            .then(response => {
+                return response.json();
+            })
+            .then(
+                json => {
+                    this.setState({
+                        movieResults: json.results || []
+                    });
+                },
+                err => console.log(err)
+            );
     };
-  }
-  componentDidMount() {
-    this.setState(
-      {
-        searchURL:
-          this.state.baseURL +
-          this.state.searchquery +
-          this.state.apikey +
-          this.state.query +
-          this.state.movieTitle
-      },
-      () => {
-        console.log('search url:' + this.state.searchURL);
-        console.log('base url:' + this.state.baseURL);
-        fetch(this.state.searchURL)
-          .then(response => {
-            return response.json();
-          })
-          .then(
-            json => {
-              this.setState({
-                movieResults: json.results
-              });
-              console.log(json.results);
-            },
-            err => console.log(err)
-          );
-      }
-    );
-  }
-  seachMovie = event => {
-    let text = event.target.innerText;
-    this.setState({
-      movieTitle: text
-    });
-  };
-  render() {
-    return (
-      <React.Fragment>
-        {this.state.movieResults ? (
-          <MoviesResult movieResults={this.state.movieResults} />
-        ) : (
-          ''
-        )}
-      </React.Fragment>
-    );
-  }
+    render() {
+        return (
+            <React.Fragment>
+                <div>
+                    <form onChange={this.handleRender}>
+                        <input
+                            className="form-control"
+                            onChange={this.handleRender}
+                            type="text"
+                            name="searchbar"
+                            id="movieTitle"
+                            placeholder="Search Movies..."
+                            value={this.state.value}
+                            style={{ fontSize: "2em" }}
+                        ></input>
+                    </form>
+                </div>
+                <MoviesResult
+                    movieResults={this.state.movieResults}
+                    currentUser={this.props.currentUser}
+                    userState={this.props.userState}
+                />
+                <NowPlaying
+                    currentUser={this.props.currentUser}
+                    userState={this.props.userState}
+                />
+                <PopularMovies
+                    currentUser={this.props.currentUser}
+                    userState={this.props.userState}
+                />
+            </React.Fragment>
+        );
+    }
 }
