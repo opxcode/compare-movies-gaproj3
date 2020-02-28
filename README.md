@@ -5,6 +5,8 @@
 ## About the App
 
 [SMDb] is a movie database built with MongoDB, Express, ReactJS, and NodeJS that allows users to search for movies and favourite. 
+## Heroku
+https://netflixbutnotreally.herokuapp.com/
 
 ## MVC
 [SMDb] Placeholder
